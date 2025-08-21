@@ -2,10 +2,16 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import { validationResult } from "express-validator";
 
 dotenv.config();
 
 export const registerUser = async (req, res) => {
+  // Check for validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
     const { name, email, phone, password, gender, dateOfBirth, address, role } =
       req.body;
@@ -57,6 +63,12 @@ export const registerUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
+
+  // Check for validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
     const { emailOrPhone, password } = req.body;
     const user = await User.findOne({
