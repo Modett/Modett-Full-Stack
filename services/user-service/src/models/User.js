@@ -1,97 +1,105 @@
 import mongoose from "mongoose";
 
-const userSchema=new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
-        trim:true,
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  address: [
+    {
+      type: String,
     },
-    email:{
-        type:String,
-        required:true,
-        trim:true,
+  ],
+  wishlist: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
     },
-    phone:{
-        type:String,
-        required:true,
+  ],
+  password: {
+    type: String,
+    required: true,
+    minlength: 8,
+  },
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
+  cart: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        default: 1,
+      },
+      size: {
+        type: String,
+        required: true,
+      },
+      color: {
+        type: String,
+        required: true,
+      },
     },
-    address:[{
-        type:String,
-    }],
-    wishlist:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Product",
-    }],
-    password:{
-        type:String,
-        required:true,
-        minlength:8,
+  ],
+  orders: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Order",
+      },
     },
-    role:{
-        type:String,
-        enum:["user","admin"],
-        default:"user"
+  ],
+  measurements: {
+    chest: {
+      type: Number,
+      required: true,
     },
-    cart:[{
-        product:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Product",
-            required:true
-        },
-        quantity:{
-            type:Number,
-            default:1,
-        },
-        size:{
-            type:String,
-            required:true,
-        },
-        color:{
-            type:String,
-            required:true,
-        },
-    }],
-    orders:[{
-        product:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Order",
-        }
-    }],
-    measurements:{
-        chest:{
-            type:Number,
-            required:true,
-        },
-        waist:{
-            type:Number,
-            required:true,
-        },
-        inseam:{
-            type:Number,
-            required:true,
-        }
+    waist: {
+      type: Number,
+      required: true,
     },
-    profileImage:{
-        type:String,
-        required:true,
+    inseam: {
+      type: Number,
+      required: true,
     },
-    newsLetterSubscribed:{
-        type:Boolean,
-        default:false,
-    },
-    gender:{
-        type:String,
-        enum:["male","female","other"],
-    },
-    dateOfBirth:{
-        type:Date,
-        required:true,
-    },
-    createdAt:{
-        type:Date,
-        Default:Date.now,
-    }
-})
+  },
+  profileImage: {
+    type: String,
+    required: true,
+  },
+  newsLetterSubscribed: {
+    type: Boolean,
+    default: false,
+  },
+  gender: {
+    type: String,
+    enum: ["male", "female", "other"],
+  },
+  dateOfBirth: {
+    type: Date,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-const User=mongoose.model("User",userSchema);
+const User = mongoose.model("User", userSchema);
 export default User;
