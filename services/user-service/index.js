@@ -15,10 +15,7 @@ if(!mongoDB_URL){
 
 async function startServer(){
     try{
-        await mongoose.connect(mongoDB_URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        await mongoose.connect(mongoDB_URL,[]);
         console.log("MongoDB connection established successfully");
         app.listen(PORT,()=>{
             console.log(`Server is running on port ${PORT}`);
