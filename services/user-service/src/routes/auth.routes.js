@@ -4,6 +4,7 @@ import { registerUser,loginUser} from "../controllers/auth.controller.js";
 // import { loginUser } from "../controllers/auth.controller.js";
 import { getProfile, updateProfile } from "../controllers/profile.controller.js";
 import { auth } from "../../middleware/auth.middleware.js";
+import isAdmin from "../../middleware/admin.middleware.js";
 
 const authRouter = express.Router();
 

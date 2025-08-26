@@ -33,4 +33,3 @@ export const createOrder = async (req, res) => {
   }
 };
 
-//  items, shippingAddress, paymentMethod
