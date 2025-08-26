@@ -2,6 +2,7 @@ import express from "express";
 import { body } from "express-validator";
 import { registerUser } from "../controllers/auth.controller.js";
 import { loginUser } from "../controllers/auth.controller.js";
+import { getProfile } from "../controllers/profile.controller.js";
 import { auth } from "../../middleware/auth.middleware.js";
 
 const router = express.Router();
@@ -25,5 +26,6 @@ router.post("/login", loginUser);
 router.get("/protected", auth, (req, res) => {
   res.json({ message: "Protected route accessed", user: req.user });
 });
+router.get("/", auth, getProfile);
 
 export default router;
