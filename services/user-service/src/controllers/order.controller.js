@@ -42,3 +42,16 @@ export const getOrders=async(req,res)=>{
         res.status(500).json({message:"Server error"});
     }
 }
+
+export const getOrderById=async(req,res)=>{
+    try{
+        const order=await Order.findOne({_id:req.params.id,user:req.user.id});
+        if(!order){
+            return res.status(404).json({message:"Order not found"});
+        }
+        res.json(order);
+    }
+    catch(error){
+        res.status(500).json({message:"Server error"});
+    }
+}
