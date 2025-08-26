@@ -1,7 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import router from "./src/routes/auth.routes.js";
+import authRouter from "./src/routes/auth.routes.js";
+import orderRouter from "./src/routes/order.routes.js";
 
 dotenv.config();
 
@@ -20,7 +21,8 @@ async function startServer(){
     try{
         await mongoose.connect(mongoDB_URL,[]);
         console.log("MongoDB connection established successfully");
-        app.use("/api/auth",router);
+        app.use("/api/auth",authRouter);
+        app.use("/api/orders",orderRouter);
         app.listen(PORT,()=>{
             console.log(`Server is running on port ${PORT}`);
         })

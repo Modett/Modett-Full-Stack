@@ -5,7 +5,7 @@ import { registerUser,loginUser} from "../controllers/auth.controller.js";
 import { getProfile, updateProfile } from "../controllers/profile.controller.js";
 import { auth } from "../../middleware/auth.middleware.js";
 
-const router = express.Router();
+const authRouter = express.Router();
 
 const registerValidationRules = [
   body("name").notEmpty().withMessage("Name is required"),
@@ -21,11 +21,11 @@ const loginValidationRules = [
   body("password").notEmpty().withMessage("Password is required"),
 ];
 
-router.post("/register", registerUser);
-router.post("/login", loginUser);
-router.get("/protected", auth, (req, res) => {
+authRouter.post("/register", registerUser);
+authRouter.post("/login", loginUser);
+authRouter.get("/protected", auth, (req, res) => {
   res.json({ message: "Protected route accessed", user: req.user });
 });
-router.get("/", auth, getProfile);
-router.put("/",auth,updateProfile)
-export default router;
+authRouter.get("/", auth, getProfile);
+authRouter.put("/", auth, updateProfile);
+export default authRouter;
