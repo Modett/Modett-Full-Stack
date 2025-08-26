@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: "../../../services/user-service/.env" });
 
-const auth = (req, res, next) => {
+export const auth = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     res
@@ -21,4 +21,3 @@ const auth = (req, res, next) => {
   }
 };
 
-export default auth;
