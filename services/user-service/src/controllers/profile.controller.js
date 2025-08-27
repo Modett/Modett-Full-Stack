@@ -64,6 +64,7 @@ export const updateBio = async (req, res) => {
   }
 };
 
+// user
 export const getPublicProfile = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -76,6 +77,16 @@ export const getPublicProfile = async (req, res) => {
       bio: user.bio,
       profileImage: user.profileImage,
     });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// admin
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
