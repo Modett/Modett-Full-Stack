@@ -81,21 +81,32 @@ export const updateShippingAddress = async (req, res) => {
   }
 };
 
-//admin
-export const updatePaymentStatus=async(req,res)=>{
-  try{
-    const {paymentStatus}=req.body;
-    const order=await Order.findByIdAndUpdate(
-      {_id:req.params.id},
-      {paymentStatus},
-      {new:true}
-    )
-    if(!order){
-      return res.status(404).json({message:"Order not found"});
+// admin
+export const updatePaymentStatus = async (req, res) => {
+  try {
+    const { paymentStatus } = req.body;
+    const order = await Order.findByIdAndUpdate(
+      { _id: req.params.id },
+      { paymentStatus },
+      { new: true }
+    );
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
     }
     res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
-  catch(error){
-    res.status(500).json({message:"Server error"});
+};
+
+// admin
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate("user", "name email")
+      .sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
-}
+};
