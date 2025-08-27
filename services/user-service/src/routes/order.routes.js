@@ -11,6 +11,8 @@ import {
   updateOrderStatus,
   getAllOrders,
   deleteOrder,
+  deleteOrderByAdmin,
+  getOrderIdByAdmin,
 } from "../controllers/order.controller.js";
 
 const orderRouter = express.Router();
@@ -32,5 +34,7 @@ orderRouter.put(
   updatePaymentStatus
 );
 orderRouter.put("/admin/:id/order-status", auth, isAdmin, updateOrderStatus);
+orderRouter.get("/admin/:id", auth, isAdmin, getOrderIdByAdmin);
+orderRouter.delete("/admin/:id", auth, isAdmin, deleteOrderByAdmin);
 
 export default orderRouter;
