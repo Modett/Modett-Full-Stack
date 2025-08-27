@@ -62,3 +62,21 @@ export const cancelOrder = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// user
+export const updateShippingAddress = async (req, res) => {
+  try {
+    const { shippingAddress } = req.body;
+    const order = await Order.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
+      { shippingAddress },
+      { new: true }
+    );
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
