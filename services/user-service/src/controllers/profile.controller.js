@@ -83,10 +83,25 @@ export const getPublicProfile = async (req, res) => {
 };
 
 // admin
-export const getAllUsers = async (req, res) => {
+export const getAllProfiles = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
+    const users = await User.find().select("name bio profileImage");
     res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// admin
+export const getProfileById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select(
+      "name bio profileImage"
+    );
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+    res.status(200).json(profile);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
