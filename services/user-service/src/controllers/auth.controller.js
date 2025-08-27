@@ -108,3 +108,7 @@ export const loginUser = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
+export const logoutUser = async (req, res) => {
+  res.status(200).json({ message: "User logged out successfully" });
+};
