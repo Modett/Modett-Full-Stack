@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     password: { type: String, required: true, minlength: 8 },
     role: { type: String, enum: ["user", "admin"], default: "user" },
+    bio: { type: String, default: "", trim: true },
     cart: [
       {
         product: {

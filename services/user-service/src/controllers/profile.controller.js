@@ -63,3 +63,59 @@ export const updateBio = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// user
+export const getPublicProfile = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId).select("name bio");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({
+      name: user.name,
+      bio: user.bio,
+      profileImage: user.profileImage,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// admin
+export const getAllProfiles = async (req, res) => {
+  try {
+    const users = await User.find().select("name bio profileImage");
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// admin
+export const getProfileById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select(
+      "name bio profileImage"
+    );
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+    res.status(200).json(profile);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// admin
+export const updateUserProfile = async (req, res) => {
+  const userId = req.params.id;
+  const updateData = req.body;
+  const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+    new: true,
+  });
+  if (!updatedUser) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  res.status(200).json(updatedUser);
+};
