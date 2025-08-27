@@ -97,6 +97,21 @@ export const updateShippingAddress = async (req, res) => {
   }
 };
 
+export const deleteOrder = async (req, res) => {
+  try {
+    const order = await Order.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.json({ message: "Order deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 // admin
 export const updatePaymentStatus = async (req, res) => {
   try {
