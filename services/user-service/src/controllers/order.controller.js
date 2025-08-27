@@ -159,3 +159,16 @@ export const updateOrderStatus = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+// user credentials
+// {
+//   "emailOrPhone": "janesmith@examp.com",
+//   "password": "StrongPassword456"
+// }
+
+// admin credentials
+// {
+//   "emailOrPhone": "admin@example.com",
+//   "password": "AdminPassword123"
+// }
