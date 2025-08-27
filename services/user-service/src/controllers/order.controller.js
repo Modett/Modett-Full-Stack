@@ -47,11 +47,27 @@ export const getOrders = async (req, res) => {
 };
 
 // user
+export const getOrderById = async (req, res) => {
+  try {
+    const order = await Order.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// user
 export const cancelOrder = async (req, res) => {
   try {
     const order = await Order.findOneAndUpdate(
       { _id: req.params.id, user: req.user.id },
-      { status: "cancelled" },
+      { orderStatus: "cancelled" },
       { new: true }
     );
     if (!order) {
@@ -86,7 +102,7 @@ export const updatePaymentStatus = async (req, res) => {
   try {
     const { paymentStatus } = req.body;
     const order = await Order.findByIdAndUpdate(
-      { _id: req.params.id },
+      req.params.id,
       { paymentStatus },
       { new: true }
     );
@@ -115,8 +131,8 @@ export const getAllOrders = async (req, res) => {
 export const updateOrderStatus = async (req, res) => {
   try {
     const { orderStatus } = req.body;
-    const order = await Order.findByAndUpdate(
-      { _id: req.params.id },
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
       { orderStatus },
       { new: true }
     );
