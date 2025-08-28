@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
+import crypto from "crypto";
+import { sendMail } from "../utils/mailer.js";
 
 dotenv.config();
 
@@ -63,7 +65,6 @@ export const registerUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
-
   // Check for validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -113,4 +114,28 @@ export const logoutUser = async (req, res) => {
   res.status(200).json({ message: "User logged out successfully" });
 };
 
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+    await sendMail(
+      user.email,
+      "Password Reset Request",
+      `Click the link to reset your password: ${resetUrl}`
+    );
+
+    res.json({ message: "Password reset link sent to your email" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
