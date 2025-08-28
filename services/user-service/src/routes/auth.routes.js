@@ -1,14 +1,17 @@
 import express from "express";
 import { body } from "express-validator";
-import { registerUser, loginUser } from "../controllers/auth.controller.js";
-// import { loginUser } from "../controllers/auth.controller.js";
+import {
+  registerUser,
+  loginUser,
+  forgotPassword,
+  resetPassword,
+  changePassword,
+} from "../controllers/auth.controller.js";
 import {
   getProfile,
   updateProfile,
 } from "../controllers/profile.controller.js";
 import { auth } from "../../middleware/auth.middleware.js";
-import isAdmin from "../../middleware/admin.middleware.js";
-import { forgotPassword } from "../controllers/auth.controller.js";
 
 const authRouter = express.Router();
 
@@ -34,4 +37,6 @@ authRouter.get("/protected", auth, (req, res) => {
 authRouter.get("/", auth, getProfile);
 authRouter.put("/", auth, updateProfile);
 authRouter.post("/forgot-password", forgotPassword);
+authRouter.post("/reset-password", resetPassword);
 export default authRouter;
+authRouter.post("/change-password", auth, changePassword);
