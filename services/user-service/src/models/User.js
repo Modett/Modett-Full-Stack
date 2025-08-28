@@ -34,6 +34,12 @@ const userSchema = new mongoose.Schema(
     newsLetterSubscribed: { type: Boolean, default: false },
     gender: { type: String, enum: ["male", "female", "other"] },
     dateOfBirth: { type: Date },
+    isVerified: { type: Boolean, default: false },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
+    socialLinks: [{ type: String }],
+    lastLogin: { type: Date },
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
