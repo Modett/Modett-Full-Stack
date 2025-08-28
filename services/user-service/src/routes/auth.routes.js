@@ -9,6 +9,7 @@ import {
 import { auth } from "../../middleware/auth.middleware.js";
 import isAdmin from "../../middleware/admin.middleware.js";
 import { forgotPassword } from "../controllers/auth.controller.js";
+import { resetPassword } from "../controllers/auth.controller.js";
 
 const authRouter = express.Router();
 
@@ -34,4 +35,5 @@ authRouter.get("/protected", auth, (req, res) => {
 authRouter.get("/", auth, getProfile);
 authRouter.put("/", auth, updateProfile);
 authRouter.post("/forgot-password", forgotPassword);
+authRouter.post("/reset-password", resetPassword);
 export default authRouter;
