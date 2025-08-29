@@ -43,4 +43,5 @@ authRouter.post("/reset-password", resetPassword);
 authRouter.post("/change-password", auth, changePassword);
 authRouter.delete("/", auth, deleteUser);
 authRouter.put("/change-email-or-phone", auth, changeEmailOrPhone);
+
 export default authRouter;
