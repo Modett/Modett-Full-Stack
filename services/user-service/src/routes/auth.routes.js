@@ -6,6 +6,7 @@ import {
   forgotPassword,
   resetPassword,
   changePassword,
+  deleteUser,
 } from "../controllers/auth.controller.js";
 import {
   getProfile,
@@ -40,3 +41,4 @@ authRouter.post("/forgot-password", forgotPassword);
 authRouter.post("/reset-password", resetPassword);
 export default authRouter;
 authRouter.post("/change-password", auth, changePassword);
+authRouter.delete("/", auth, deleteUser);
