@@ -8,12 +8,17 @@ import {
   changePassword,
   deleteUser,
   changeEmailOrPhone,
+  getAllUsers,
+  getUserById,
+  updateUserRole,
+  deleteUserByAdmin,
 } from "../controllers/auth.controller.js";
 import {
   getProfile,
   updateProfile,
 } from "../controllers/profile.controller.js";
 import { auth } from "../../middleware/auth.middleware.js";
+import isAdmin from "../../middleware/admin.middleware.js";
 
 const authRouter = express.Router();
 
@@ -43,5 +48,9 @@ authRouter.post("/reset-password", resetPassword);
 authRouter.post("/change-password", auth, changePassword);
 authRouter.delete("/", auth, deleteUser);
 authRouter.put("/change-email-or-phone", auth, changeEmailOrPhone);
+authRouter.post("/admin/get-all-users", auth, isAdmin, getAllUsers);
+authRouter.post("/admin/get-user/:id", auth, isAdmin, getUserById);
+authRouter.post("/admin/update-user-role/:id", auth, isAdmin, updateUserRole);
+authRouter.post("/admin/delete-user/:id", auth, isAdmin, deleteUserByAdmin);
 
 export default authRouter;
