@@ -265,6 +265,7 @@ export const getUserById = async (req, res) => {
 };
 
 // admin
+
 export const updateUserRole = async (req, res) => {
   try {
     const userId = req.params.id;
