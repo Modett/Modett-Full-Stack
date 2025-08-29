@@ -216,18 +216,23 @@ export const changeEmailOrPhone = async (req, res) => {
     }
     if (newEmail) {
       const emailExists = await User.findOne({ email: newEmail });
-      if (emailExists && emailExists._id.toString() == userId) {
+      if (emailExists && emailExists._id.toString() !== userId) {
         return res.status(404).json({ message: "Email already in use" });
       }
       user.email = newEmail;
     }
     if (newPhone) {
       const phoneExists = await User.findOne({ phone: newPhone });
-      if (phoneExists && phoneExists._id.toString() == userId) {
+      if (phoneExists && phoneExists._id.toString() !== userId) {
         return res.status(404).json({ message: "Phone number already in use" });
       }
       user.phone = newPhone;
     }
+    await user.save();
+    res.json({
+      message: "Email/Phone updated successfully",
+      user: { email: user.email, phone: user.phone },
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

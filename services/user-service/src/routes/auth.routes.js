@@ -7,6 +7,7 @@ import {
   resetPassword,
   changePassword,
   deleteUser,
+  changeEmailOrPhone,
 } from "../controllers/auth.controller.js";
 import {
   getProfile,
@@ -39,6 +40,7 @@ authRouter.get("/", auth, getProfile);
 authRouter.put("/", auth, updateProfile);
 authRouter.post("/forgot-password", forgotPassword);
 authRouter.post("/reset-password", resetPassword);
-export default authRouter;
 authRouter.post("/change-password", auth, changePassword);
 authRouter.delete("/", auth, deleteUser);
+authRouter.put("/change-email-or-phone", auth, changeEmailOrPhone);
+export default authRouter;
