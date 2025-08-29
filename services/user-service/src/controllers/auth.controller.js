@@ -264,6 +264,7 @@ export const getUserById = async (req, res) => {
   }
 };
 
+// admin
 export const updateUserRole = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -279,3 +280,19 @@ export const updateUserRole = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+// admin
+
+export const deleteUserByAdmin = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
