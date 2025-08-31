@@ -128,15 +128,14 @@ export const forgotPassword = async (req, res) => {
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
     await sendMail(
       user.email,
       "Password Reset Request",
       `Click the link to reset your password: ${resetUrl}`
     );
-    console.log(user.resetPasswordToken);
-
     res.json({ message: "Password reset link sent to your email" });
+    console.log(user.resetPasswordToken);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -296,4 +295,3 @@ export const deleteUserByAdmin = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
