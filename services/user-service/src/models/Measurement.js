@@ -145,4 +145,5 @@ const measurementSchema = new mongoose.Schema({
 // Index for faster queries
 measurementSchema.index({ userId: 1, isActive: 1 })
 
-const Measurement = mongoose.model('Measurement', measurementSchema)
+const Measurement = mongoose.model('Measurement', measurementSchema);
+export default Measurement;
