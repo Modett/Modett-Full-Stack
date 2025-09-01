@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import authRouter from "./src/routes/auth.routes.js";
 import orderRouter from "./src/routes/order.routes.js";
+import measurementRouter from "./src/routes/measurement.routes.js";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ async function startServer(){
         console.log("MongoDB connection established successfully");
         app.use("/api/auth",authRouter);
         app.use("/api/orders",orderRouter);
+        app.use("/api/measurements",measurementRouter);
         app.listen(PORT,()=>{
             console.log(`Server is running on port ${PORT}`);
         })
