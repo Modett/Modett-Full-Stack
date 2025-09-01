@@ -173,3 +173,25 @@ export const getMeasurementById = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
+// get all measurements from all users :admin
+export const adminGetAllMeasurements=async(req,res)=>{
+  const errors=validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(400).json({errors:errors.array()});
+  }
+  try{
+    const measurements=await Measurement.find();
+    if(!measurements||measurements.length===0){
+      return res.status(404).json({message:"No measurements found."});
+    }
+    return res.status(200).json({
+      message: "Measurements retrieved successfully.",
+      measurements,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+}
