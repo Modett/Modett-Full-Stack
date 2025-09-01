@@ -188,8 +188,8 @@ export const deleteOrderByAdmin = async (req, res) => {
 
 // user credentials
 // {
-//   "emailOrPhone": "janesmith@examp.com",
-//   "password": "StrongPassword456"
+//   "emailOrPhone": "isabella.green@example.com",
+//   "password": "IsabellaFashion2025!"
 // }
 
 // admin credentials

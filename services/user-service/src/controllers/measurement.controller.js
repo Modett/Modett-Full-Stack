@@ -1,4 +1,4 @@
-import Measurement from "../models/Measurement";
+import Measurement from "../models/Measurement.js";
 import User from "../models/User.js";
 import { validationResult } from "express-validator";
 
@@ -38,3 +38,6 @@ export const createMeasurement = async (req, res) => {
       .json({ message: "Internal server error", error: error.messag });
   }
 };
+
+// update user's measurements
+
