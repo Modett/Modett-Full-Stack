@@ -74,3 +74,23 @@ export const updateMeasurement = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
+// get user's current measurements
+
+export const getCurrentMeasurement=async(req,res)=>{
+  const errors=validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try{
+    const userId=req.userId;
+    const getCurrentMeasurement=await Measurement.findOne({userId,isActive:true});
+    if(!getCurrentMeasurement){
+      return res.status(404).json({ message: "No active measurements found." });
+    }
+    return res.status(200).json({message:"Measurements retrieved successfully", measurement: getCurrentMeasurement})
+  }
+  catch(error){
+    return res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+}
