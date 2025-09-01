@@ -121,3 +121,55 @@ export const deleteMeasurement = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
+// get all user's measurements
+export const getAllUserMeasurements = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const userId = req.user.id;
+    const measurements = await Measurement.find({ userId }).sort({
+      createdAt: -1,
+    });
+    if (!measurements || measurements.length === 0) {
+      return res.status(404).json({ message: "No measurements found." });
+    }
+    return res.status(200).json({
+      message: "Measurements retrieved successfully.",
+      measurements,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+// get measurement by id
+export const getMeasurementById = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const userId = req.user.id;
+    const measurementId = req.params.id;
+    const measurement = await Measurement.findOne({
+      userId,
+      _id: measurementId,
+    });
+    if (!measurement) {
+      return res.status(404).json({ message: "Measurement not found." });
+    }
+    return res.status(200).json({
+      message: "Measurement retrieved successfully.",
+      measurement,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
