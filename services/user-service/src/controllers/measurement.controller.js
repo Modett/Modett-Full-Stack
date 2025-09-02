@@ -276,4 +276,32 @@ export const updateMeasurementByMeasurementId = async (req, res) => {
   }
 };
 
-// 
+// delete measurement by measurement id : admin
+export const deleteMeasurementByMeasurementId = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const measurementId = req.params.id;
+    const deleteMeasurement = await Measurement.findById(measurementId);
+    if (!deleteMeasurement) {
+      return res.status(404).json({ message: "Measurement not found." });
+    }
+    deleteMeasurement.isActive = false;
+    await deleteMeasurement.save();
+    return res
+      .status(200)
+      .json({ message: "Measurement deleted successfully." });
+  } catch (error) {
+    // Handle invalid ObjectId format
+    if (error.name === "CastError") {
+      return res.status(400).json({ message: "Invalid measurement ID format" });
+    }
+
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
