@@ -203,7 +203,7 @@ export const getMeasurementByUserId=async(req,res)=>{
     return res.status(400).json({errors:errors.array()});
   }
   try{
-    const userId=req.params.userId;
+    const userId=req.params.id;
     const measurements=await Measurement.find({userId});
     if(!measurements||measurements.length===0){
       return res.status(404).json({message:"No measurements found."});
@@ -218,3 +218,26 @@ export const getMeasurementByUserId=async(req,res)=>{
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
+// get measurement by measurement id : admin
+export const getMeasurementByMeasurementId=async(req,res)=>{
+  const errors=validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(400).json({errors:errors.array()});
+  }
+  try{
+    const measurementId=req.params.id;
+    const measurement=await Measurement.findById({measurementId}).populate('userId', 'name email phone address role gender dateOfBirth');
+    if(!measurement){
+      return res.status(404).json({message:"Measurement not found."});
+    }
+    return res.status(200).json({
+      message: "Measurement retrieved successfully.",
+      measurement,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+}
