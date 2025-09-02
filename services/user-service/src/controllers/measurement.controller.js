@@ -175,15 +175,15 @@ export const getMeasurementById = async (req, res) => {
 };
 
 // get all measurements from all users :admin
-export const getAllMeasurements=async(req,res)=>{
-  const errors=validationResult(req);
-  if(!errors.isEmpty()){
-    return res.status(400).json({errors:errors.array()});
+export const getAllMeasurements = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
-  try{
-    const measurements=await Measurement.find();
-    if(!measurements||measurements.length===0){
-      return res.status(404).json({message:"No measurements found."});
+  try {
+    const measurements = await Measurement.find();
+    if (!measurements || measurements.length === 0) {
+      return res.status(404).json({ message: "No measurements found." });
     }
     return res.status(200).json({
       message: "Measurements retrieved successfully.",
@@ -194,19 +194,19 @@ export const getAllMeasurements=async(req,res)=>{
       .status(500)
       .json({ message: "Internal server error", error: error.message });
   }
-}
+};
 
 // get measurements by user id : admin;
-export const getMeasurementByUserId=async(req,res)=>{
-  const errors=validationResult(req);
-  if(!errors.isEmpty()){
-    return res.status(400).json({errors:errors.array()});
+export const getMeasurementByUserId = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
-  try{
-    const userId=req.params.id;
-    const measurements=await Measurement.find({userId});
-    if(!measurements||measurements.length===0){
-      return res.status(404).json({message:"No measurements found."});
+  try {
+    const userId = req.params.id;
+    const measurements = await Measurement.find({ userId });
+    if (!measurements || measurements.length === 0) {
+      return res.status(404).json({ message: "No measurements found." });
     }
     return res.status(200).json({
       message: "Measurements retrieved successfully.",
@@ -220,16 +220,19 @@ export const getMeasurementByUserId=async(req,res)=>{
 };
 
 // get measurement by measurement id : admin
-export const getMeasurementByMeasurementId=async(req,res)=>{
-  const errors=validationResult(req);
-  if(!errors.isEmpty()){
-    return res.status(400).json({errors:errors.array()});
+export const getMeasurementByMeasurementId = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
-  try{
-    const measurementId=req.params.id;
-    const measurement=await Measurement.findById({measurementId}).populate('userId', 'name email phone address role gender dateOfBirth');
-    if(!measurement){
-      return res.status(404).json({message:"Measurement not found."});
+  try {
+    const measurementId = req.params.id;
+    const measurement = await Measurement.findById({ measurementId }).populate(
+      "userId",
+      "name email phone address role gender dateOfBirth"
+    );
+    if (!measurement) {
+      return res.status(404).json({ message: "Measurement not found." });
     }
     return res.status(200).json({
       message: "Measurement retrieved successfully.",
@@ -240,4 +243,37 @@ export const getMeasurementByMeasurementId=async(req,res)=>{
       .status(500)
       .json({ message: "Internal server error", error: error.message });
   }
-}
+};
+
+// update measurement by measurement id : admin
+export const updateMeasurementByMeasurementId = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const measurementId = req.params.id;
+    const updateData = req.body;
+    const measurement = await Measurement.findById(measurementId);
+    if (!measurement) {
+      return res.status(404).json({ message: "Measurement not found." });
+    }
+    Object.keys(updateData).forEach((key) => {
+      if (updateData[key] !== undefined) {
+        measurement[key] = updateData[key];
+      }
+    });
+    await measurement.save();
+    await measurement.populate("userId", "name email phone");
+    return res.status(200).json({
+      message: "Measurement updated successfully.",
+      measurement,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+// 
