@@ -61,14 +61,14 @@ measurementRouter.get(
   "/admin/user/:id",
   auth,
   isAdmin,
-//   measurementValidationRules,
+  //   measurementValidationRules,
   getMeasurementByUserId
 );
 measurementRouter.get(
   "/admin/:id",
   auth,
   isAdmin,
-//   measurementValidationRules,
+  //   measurementValidationRules,
   getMeasurementByMeasurementId
 );
 measurementRouter.put(
@@ -82,11 +82,11 @@ measurementRouter.delete(
   "/admin/:id",
   auth,
   isAdmin,
-  measurementValidationRules,
+  //   measurementValidationRules,
   deleteMeasurementByMeasurementId
 );
 measurementRouter.post(
-  "/admin/user/:id",
+  "/admin/user",
   auth,
   isAdmin,
   measurementValidationRules,
