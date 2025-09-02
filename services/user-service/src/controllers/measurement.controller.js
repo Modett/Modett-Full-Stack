@@ -305,3 +305,41 @@ export const deleteMeasurementByMeasurementId = async (req, res) => {
     });
   }
 };
+
+// create measurement for user : admin
+export const createMeasurementForUser = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ message: "userId is required" });
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const existingMeasurement = await Measurement.findOne({
+      userId,
+      isActive: true,
+    });
+    if (existingMeasurement) {
+      return res
+        .status(400)
+        .json({ message: "Measurement already exists for this user" });
+    }
+    const measurementData = { ...req.body };
+    const newMeasurement = new Measurement(measurementData);
+    await newMeasurement.save();
+    return res.status(201).json({
+      message: "Measurement created successfully.",
+      measurement: newMeasurement,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
