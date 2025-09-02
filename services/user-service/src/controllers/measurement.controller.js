@@ -204,7 +204,7 @@ export const getMeasurementByUserId = async (req, res) => {
   }
   try {
     const userId = req.params.id;
-    const measurements = await Measurement.find({ userId });
+    const measurements = await Measurement.findOne({ userId });
     if (!measurements || measurements.length === 0) {
       return res.status(404).json({ message: "No measurements found." });
     }
@@ -227,7 +227,7 @@ export const getMeasurementByMeasurementId = async (req, res) => {
   }
   try {
     const measurementId = req.params.id;
-    const measurement = await Measurement.findById({ measurementId }).populate(
+    const measurement = await Measurement.findById(measurementId).populate(
       "userId",
       "name email phone address role gender dateOfBirth"
     );
