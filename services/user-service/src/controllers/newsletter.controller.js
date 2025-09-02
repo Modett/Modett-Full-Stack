@@ -1,0 +1,82 @@
+import Newsletter from "../models/Newsletter.js";
+
+export const subscribeToNewsletter = async (req, res) => {
+  try {
+    const {
+      email,
+      firstName,
+      lastName,
+      preferences,
+      interests,
+      sizePreferences,
+      ageRange,
+      profession,
+      source,
+      consentGiven,
+    } = req.body;
+
+    // Validate required fields
+    if (!email || !consentGiven) {
+      return res
+        .status(400)
+        .json({ message: "Email and consent are required." });
+    }
+
+    // Check if already subscribed
+    const existing = await Newsletter.findOne({
+      email: email.toLowerCase().trim(),
+    });
+    if (existing && existing.isActive) {
+      return res.status(409).json({ message: "Email is already subscribed." });
+    }
+
+    // Reactivate if previously unsubscribed
+    if (existing) {
+      existing.isActive = true;
+      existing.unsubscribedAt = undefined;
+      existing.unsubscribeReason = undefined;
+      existing.firstName = firstName || existing.firstName;
+      existing.lastName = lastName || existing.lastName;
+      existing.preferences = preferences || existing.preferences;
+      existing.interests = interests || existing.interests;
+      existing.sizePreferences = sizePreferences || existing.sizePreferences;
+      existing.ageRange = ageRange || existing.ageRange;
+      existing.profession = profession || existing.profession;
+      existing.source = source || existing.source;
+      existing.consentGiven = consentGiven;
+      existing.consentDate = Date.now();
+      await existing.save();
+      return res
+        .status(200)
+        .json({
+          message: "Subscription reactivated and updated.",
+          subscriber: existing,
+        });
+    }
+
+    // Create new subscription
+    const newSubscriber = new Newsletter({
+      email,
+      firstName,
+      lastName,
+      preferences,
+      interests,
+      sizePreferences,
+      ageRange,
+      profession,
+      source,
+      consentGiven,
+      consentDate: Date.now(),
+      isActive: true,
+    });
+
+    await newSubscriber.save();
+    return res
+      .status(201)
+      .json({ message: "Subscribed successfully.", subscriber: newSubscriber });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
