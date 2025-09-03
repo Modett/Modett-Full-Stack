@@ -1,6 +1,11 @@
 import Newsletter from "../models/Newsletter.js";
+import { validationResult } from "express-validator";
 
 export const subscribeToNewsletter = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
     const {
       email,
@@ -46,12 +51,10 @@ export const subscribeToNewsletter = async (req, res) => {
       existing.consentGiven = consentGiven;
       existing.consentDate = Date.now();
       await existing.save();
-      return res
-        .status(200)
-        .json({
-          message: "Subscription reactivated and updated.",
-          subscriber: existing,
-        });
+      return res.status(200).json({
+        message: "Subscription reactivated and updated.",
+        subscriber: existing,
+      });
     }
 
     // Create new subscription
@@ -80,3 +83,4 @@ export const subscribeToNewsletter = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
