@@ -162,3 +162,25 @@ export const getAllSubscribers = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
+// admin
+export const getSubscriberByEmail=async(req,res)=>{
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try{
+    const {email}=req.body;
+    const subscriber=await Newsletter.findOne({email:email.toLowerCase().trim()});
+    if(!subscriber){
+      return res.status(404).json({message:"Subscriber not found."});
+    }
+    return res.status(200).json({subscriber});
+  }catch(error){
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+}
+
+// admin
