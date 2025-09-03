@@ -146,3 +146,56 @@ export const updateSubscriberPreferences = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
+// admin
+export const getAllSubscribers = async (req, res) => {
+  try {
+    const subscribers = await Newsletter.find();
+    return res.status(200).json({ subscribers });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+// admin
+export const getSubscriberByEmail=async(req,res)=>{
+  try{
+    const {email}=req.body;
+    const subscriber=await Newsletter.findOne({email:email.toLowerCase().trim()});
+    if(!subscriber){
+      return res.status(404).json({message:"Subscriber not found."});
+    }
+    return res.status(200).json({subscriber});
+  }catch(error){
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+}
+
+// admin
+export const getSubscriberStats = async (req, res) => {
+  try {
+    const totalSubscribers = await Newsletter.countDocuments();
+    const activeSubscribers = await Newsletter.countDocuments({ isActive: true });
+    const unsubscribed = await Newsletter.countDocuments({ isActive: false });
+    const totalEmailsOpened = await Newsletter.aggregate([
+      { $group: { _id: null, total: { $sum: "$totalEmailsOpened" } } }
+    ]);
+    const totalClicks = await Newsletter.aggregate([
+      { $group: { _id: null, total: { $sum: "$totalClicks" } } }
+    ]);
+
+    return res.status(200).json({
+      totalSubscribers,
+      activeSubscribers,
+      unsubscribed,
+      totalEmailsOpened: totalEmailsOpened[0]?.total || 0,
+      totalClicks: totalClicks[0]?.total || 0
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
