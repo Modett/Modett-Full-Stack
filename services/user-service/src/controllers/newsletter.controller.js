@@ -115,3 +115,34 @@ export const unsubscribeFromNewsletter = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
+export const updateSubscriberPreferences = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const { email, preferences, interests, sizePreferences } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Email is required." });
+    }
+    const subscriber = await Newsletter.findOne({
+      email: email.toLowerCase().trim(),
+      isActive: true,
+    });
+    if (!subscriber) {
+      return res.status(404).json({ message: "Subscriber not found." });
+    }
+    subscriber.preferences = preferences || subscriber.preferences;
+    subscriber.interests = interests || subscriber.interests;
+    subscriber.sizePreferences = sizePreferences || subscriber.sizePreferences;
+    await subscriber.save();
+    return res
+      .status(200)
+      .json({ message: "Preferences updated successfully.", subscriber });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
