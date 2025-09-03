@@ -1,4 +1,4 @@
-import Wishlist from "../models/Wishlist";
+import Wishlist from "../models/Wishlist.js";
 import { validationResult } from "express-validator";
 
 export const createWishlist = async (req, res) => {
@@ -30,6 +30,20 @@ export const createWishlist = async (req, res) => {
       .json({ message: "Wishlist created successfully", wishlist });
   } catch (error) {
     console.error("Error creating wishlist:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const getWishlist = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const wishlist = await Wishlist.findOne(userId).populate("items.product");
+    if (!wishlist) {
+      return res.status(404).json({ error: "Wishlist not found" });
+    }
+    res.status(200).json({ wishlist });
+  } catch (error) {
+    console.error("Error fetching wishlist:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
