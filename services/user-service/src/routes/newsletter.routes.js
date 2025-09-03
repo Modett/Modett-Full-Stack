@@ -20,33 +20,18 @@ newsLetterRouter.post(
   subscribeToNewsletter
 );
 
-newsLetterRouter.post(
-  "/unsubscribe",
-  auth,
-  newsletterValidationRules,
-  unsubscribeFromNewsletter
-);
+newsLetterRouter.post("/unsubscribe", auth, unsubscribeFromNewsletter);
 
 newsLetterRouter.put(
   "/update-preferences",
   auth,
-  newsletterValidationRules,
+  // newsletterValidationRules,
   updateSubscriberPreferences
 );
 
-newsLetterRouter.get(
-  "/admin/subscribers",
-  auth,
-  isAdmin,
-  getAllSubscribers
-);
+newsLetterRouter.get("/admin/subscribers", auth, isAdmin, getAllSubscribers);
 
-newsLetterRouter.get(
-  "/admin/subscriber",
-  auth,
-  isAdmin,
-  getSubscriberByEmail
-);
+newsLetterRouter.get("/admin/subscriber", auth, isAdmin, getSubscriberByEmail);
 
 newsLetterRouter.get(
   "/admin/subscriber-stats",
