@@ -5,6 +5,7 @@ import authRouter from "./src/routes/auth.routes.js";
 import orderRouter from "./src/routes/order.routes.js";
 import measurementRouter from "./src/routes/measurement.routes.js";
 import newsLetterRouter from "./src/routes/newsletter.routes.js";
+import wishlistRouter from "./src/routes/wishlist.routes.js";
 
 dotenv.config();
 
@@ -27,6 +28,8 @@ async function startServer() {
     app.use("/api/orders", orderRouter);
     app.use("/api/measurements", measurementRouter);
     app.use("/api/newsletter", newsLetterRouter);
+    app.use("/api/wishlist", wishlistRouter);
+
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
