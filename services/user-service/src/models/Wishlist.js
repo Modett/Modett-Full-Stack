@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import crypto from "crypto";
 
 const wishlistItemSchema = new mongoose.Schema({
   product: {
@@ -72,6 +73,11 @@ wishlistSchema.virtual("itemCount").get(function () {
 wishlistSchema.virtual("totalValue").get(function () {
   return this.items.reduce((total, item) => total + item.priceWhenAdded, 0);
 });
+
+wishlistSchema.methods.generateShareableLink = function () {
+  this.shareableLink = crypto.randomBytes(16).toString("hex");
+  return this.save();
+};
 
 const Wishlist = mongoose.model("Wishlist", wishlistSchema);
 export default Wishlist;
