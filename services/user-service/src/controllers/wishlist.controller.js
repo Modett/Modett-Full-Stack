@@ -179,3 +179,39 @@ export const removeItemFromWishlist = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const updateWishlistItem = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { productId, updateData } = req.body;
+
+    if (!productId || !updateData) {
+      return res
+        .status(400)
+        .json({ error: "Product ID and update data are required" });
+    }
+    const wishlist = await Wishlist.findOne(userId);
+    if (!wishlist) {
+      return res.status(404).json({ error: "Wishlist not found" });
+    }
+    const itemIndex = wishlist.items.findIndex(
+      (item) => item.product.toString() === productId.toString()
+    );
+    if (itemIndex === -1) {
+      return res.status(404).json({ error: "Item not found in wishlist" });
+    }
+
+    wishlist.items[itemIndex] = {
+      ...wishlist.items[itemIndex],
+      ...updateData,
+    };
+
+    await wishlist.save();
+    res
+      .status(200)
+      .json({ message: "Wishlist item updated successfully", wishlist });
+  } catch (error) {
+    console.error("Error updating wishlist item:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
