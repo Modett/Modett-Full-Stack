@@ -215,3 +215,17 @@ export const updateWishlistItem = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const getWishlistItems = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const wishlist = await Wishlist.findOne({ user: userId });
+    if (!wishlist) {
+      return res.status(404).json({ error: "Wishlist not found" });
+    }
+    return res.status(200).json({ wishlistItems: wishlist.items });
+  } catch (error) {
+    console.error("Error fetching wishlist items:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
