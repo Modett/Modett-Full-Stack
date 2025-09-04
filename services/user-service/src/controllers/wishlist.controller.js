@@ -229,3 +229,29 @@ export const getWishlistItems = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// admin
+export const getAllWishlists = async (req, res) => {
+  try {
+    const wishlists = await Wishlist.find();
+    return res.status(200).json({ wishlists });
+  } catch (error) {
+    console.error("Error fetching all wishlists:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// admin
+export const deleteWishlistByAdmin = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const wishlist = await Wishlist.findOneAndDelete(userId);
+    if (!wishlist) {
+      return res.status(404).json({ error: "Wishlist not found" });
+    }
+    return res.status(200).json({ message: "Wishlist deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting wishlist:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
