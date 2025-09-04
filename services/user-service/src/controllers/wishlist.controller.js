@@ -79,3 +79,17 @@ export const updateWishlist = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const deleteWishlist=async(req,res)=>{
+  try{
+    const userId=req.user.id;
+    const deletedWishlist=await Wishlist.findOneAndDelete({ user: userId });
+    if(!deletedWishlist){
+      return res.status(404).json({error:"Wishlist not found"});
+    }
+    res.status(200).json({ message: "Wishlist deleted successfully", deletedWishlist });
+  }catch(error){
+    console.error("Error deleting wishlist:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
