@@ -101,51 +101,52 @@ export const addItemToWishlist = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  
+
   try {
     const userId = req.user.id;
-    const { product, preferredSize, preferredColor, priceWhenAdded, notes } = req.body;
-    
+    const { product, preferredSize, preferredColor, priceWhenAdded, notes } =
+      req.body;
+
     if (!product || !priceWhenAdded) {
-      return res.status(400).json({ 
-        error: "Product ID and price are required" 
+      return res.status(400).json({
+        error: "Product ID and price are required",
       });
     }
-    
+
     let wishlist = await Wishlist.findOne({ user: userId });
-    
+
     if (!wishlist) {
       wishlist = new Wishlist({ user: userId });
     }
-    
+
     const existingItemIndex = wishlist.items.findIndex(
-      item => item.product.toString() === product.toString()
+      (item) => item.product.toString() === product.toString()
     );
-    
+
     if (existingItemIndex > -1) {
-      return res.status(400).json({ 
-        error: "Item already exists in wishlist" 
+      return res.status(400).json({
+        error: "Item already exists in wishlist",
       });
     }
-    
+
     const newItem = {
       product,
       preferredSize,
       preferredColor,
       priceWhenAdded,
       notes,
-      addedAt: new Date()
+      addedAt: new Date(),
     };
-    
+
     wishlist.items.push(newItem);
     await wishlist.save();
-    
-    await wishlist.populate('items.product');
-    
+
+    await wishlist.populate("items.product");
+
     res.status(201).json({
       message: "Item added to wishlist successfully",
       wishlist,
-      addedItem: newItem
+      addedItem: newItem,
     });
   } catch (error) {
     console.error("Error adding item to wishlist:", error);
@@ -153,3 +154,78 @@ export const addItemToWishlist = async (req, res) => {
   }
 };
 
+export const removeItemFromWishlist = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const productId = req.params.id;
+
+    if (!productId) {
+      return res.status(400).json({ error: "Product ID is required" });
+    }
+
+    const wishlist = await Wishlist.findOne(userId);
+    if (!wishlist) {
+      return res.status(404).json({ error: "Wishlist not found" });
+    }
+    const itemIndex = wishlist.items.indexOf(productId);
+    if (itemIndex == -1) {
+      return res.status(404).json({ error: "Item not found in wishlist" });
+    }
+    wishlist.items.splice(itemIndex, 1);
+    await wishlist.save();
+    res.status(200).json({ message: "Item removed from wishlist", wishlist });
+  } catch (error) {
+    console.error("Error removing item from wishlist:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const updateWishlistItem = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { productId, updateData } = req.body;
+
+    if (!productId || !updateData) {
+      return res
+        .status(400)
+        .json({ error: "Product ID and update data are required" });
+    }
+    const wishlist = await Wishlist.findOne(userId);
+    if (!wishlist) {
+      return res.status(404).json({ error: "Wishlist not found" });
+    }
+    const itemIndex = wishlist.items.findIndex(
+      (item) => item.product.toString() === productId.toString()
+    );
+    if (itemIndex === -1) {
+      return res.status(404).json({ error: "Item not found in wishlist" });
+    }
+
+    wishlist.items[itemIndex] = {
+      ...wishlist.items[itemIndex],
+      ...updateData,
+    };
+
+    await wishlist.save();
+    res
+      .status(200)
+      .json({ message: "Wishlist item updated successfully", wishlist });
+  } catch (error) {
+    console.error("Error updating wishlist item:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const getWishlistItems = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const wishlist = await Wishlist.findOne({ user: userId });
+    if (!wishlist) {
+      return res.status(404).json({ error: "Wishlist not found" });
+    }
+    return res.status(200).json({ wishlistItems: wishlist.items });
+  } catch (error) {
+    console.error("Error fetching wishlist items:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
